@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DeepLearning基础 | Jabari</title><meta name="keywords" content="机器学习"><meta name="author" content="JabariH,hjabari@qq.com"><meta name="copyright" content="JabariH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="DeepLearning基础前言这篇文章主要讲解了深度学习的基础的一些概念，包括神经网络、损失函数等。文中介绍的只是一些基础的，其实还有很多文中并未涉及到的知识点。小编本人在这方面“功力”也不是很深厚，如有错漏，请指正！ 背景介绍1.深度学习应用图像识别 手机中照片分类-图像分类 NLP（自然语言处理）应用 NLP+图像应用 线性分类器和神经网络这部分的内容是以图像识别为例子，通过狗、猫、大象的图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeepLearning基础">
+<meta property="og:url" content="http://example.com/2020/07/08/DeepLearning%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Jabari">
+<meta property="og:description" content="DeepLearning基础前言这篇文章主要讲解了深度学习的基础的一些概念，包括神经网络、损失函数等。文中介绍的只是一些基础的，其实还有很多文中并未涉及到的知识点。小编本人在这方面“功力”也不是很深厚，如有错漏，请指正！ 背景介绍1.深度学习应用图像识别 手机中照片分类-图像分类 NLP（自然语言处理）应用 NLP+图像应用 线性分类器和神经网络这部分的内容是以图像识别为例子，通过狗、猫、大象的图">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/07/08/UVWeTe.png">
+<meta property="article:published_time" content="2020-07-08T08:00:00.000Z">
+<meta property="article:modified_time" content="2021-01-22T13:11:55.940Z">
+<meta property="article:author" content="JabariH">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/07/08/UVWeTe.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/07/08/DeepLearning%E5%9F%BA%E7%A1%80/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":100,"languages":{"author":"作者: JabariH","link":"链接: ","source":"来源: Jabari","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2021-01-22 21:11:55'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}const fontSizeVal = saveToLocal.get('global-font-size')
+if (fontSizeVal !== undefined) {
+  document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://s1.ax1x.com/2020/07/08/UVWeTe.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jabari</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DeepLearning基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-07-08T08:00:00.000Z" title="发表于 2020-07-08 16:00:00">2020-07-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-01-22T13:11:55.940Z" title="更新于 2021-01-22 21:11:55">2021-01-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="DeepLearning基础"><a href="#DeepLearning基础" class="headerlink" title="DeepLearning基础"></a>DeepLearning基础</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这篇文章主要讲解了深度学习的基础的一些概念，包括神经网络、损失函数等。文中介绍的只是一些基础的，其实还有很多文中并未涉及到的知识点。小编本人在这方面“功力”也不是很深厚，如有错漏，请指正！</p>
+<h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><h4 id="1-深度学习应用"><a href="#1-深度学习应用" class="headerlink" title="1.深度学习应用"></a>1.深度学习应用</h4><p>图像识别<br><img src="https://s1.ax1x.com/2020/06/29/NhlU2V.png" alt="NhlU2V.png"></p>
+<p>手机中照片分类-图像分类<br><img src="https://s1.ax1x.com/2020/06/29/NhlwKU.png" alt="NhlwKU.png"></p>
+<p>NLP（自然语言处理）应用<br><img src="https://s1.ax1x.com/2020/06/29/NhlXM8.png" alt="NhlXM8.png"></p>
+<p>NLP+图像应用<br><img src="https://s1.ax1x.com/2020/06/29/NhlzZQ.png" alt="NhlzZQ.png"></p>
+<h3 id="线性分类器和神经网络"><a href="#线性分类器和神经网络" class="headerlink" title="线性分类器和神经网络"></a>线性分类器和神经网络</h3><p>这部分的内容是以图像识别为例子，通过狗、猫、大象的图片识别的具体实例来介绍相应的概念。</p>
+<h4 id="线性分类器得分函数"><a href="#线性分类器得分函数" class="headerlink" title="线性分类器得分函数"></a>线性分类器得分函数</h4><p>如下图所示，f(x,W)是得分函数，通过输入样本x，以及函数内部的权重W，经由函数映射得到最后图像各分类的得分（或者概率）。</p>
+<p>对于图像数据的处理：图像像素是32x32（长X宽），rgb三色通道，是一个三维矩阵，通过一些工具包将三维矩阵拉伸成一个向量。即3072x1，再带入运算。</p>
+<p><img src="http://yanxuan.nosdn.127.net/8cb700ae4408a93f2ace8ed8fa8cfd05.png" alt="UTOOLS1594197531254.png"></p>
+<p>下面这张图对线性分类器得分函数做了一个简要的图解。下图是三个类别（狗、猫、象）的分类，所以只有三个得分。</p>
+<p><img src="http://yanxuan.nosdn.127.net/d930ede2b54f9644816c447ba475ce99.png" alt="UTOOLS1594197488464.png"></p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>损失函数，在机器学习里并不少见，简单来说，它用于评估预测结果与正确结果之间的差异。</p>
+<p><img src="http://yanxuan.nosdn.127.net/2aef4a1c0c00f5125d201608df518e0a.png" alt="UTOOLS1594197478183.png"></p>
+<p>loss function（损失函数）有不同选择，下面只介绍hinge loss 和 softmax两个损失函数。</p>
+<ul>
+<li>hinge loss</li>
+</ul>
+<p><img src="http://yanxuan.nosdn.127.net/fba124efd013c64cd9162e1fea6d63eb.png" alt="UTOOLS1594197466063.png"></p>
+<p>注：hinge loss 是弱化的，无约束的损失函数。（看看就好）</p>
+<p><img src="http://yanxuan.nosdn.127.net/414f80fcdb355e8f1c3f08ba47a8db07.png" alt="UTOOLS1594197452729.png"></p>
+<p>举个例子，假设图像识别是猫的得分在S2处，那么看你非猫的得分与是猫的得分的距离是否在安全距离（delta为安全距离，上图中红色线段部分）以外，如果是则可以接受，如果不是，那么就会有一个惩罚，惩罚的大小就是：</p>
+<blockquote>
+<p>（非猫的得分 - 最小安全距离）</p>
+</blockquote>
+<p>在安全区之外惩罚为0</p>
+<p><img src="http://yanxuan.nosdn.127.net/f203e84a6d0861b562d01770bd25181f.png" alt="UTOOLS1594200148566.png"></p>
+<p>红框中公式既是计算的惩罚。</p>
+<p>delta是自己设置的，代表你对这个分类器的要求严苛程度，属于超参数。一般设置为固定值1。</p>
+<ul>
+<li>交叉熵损失函数（softmax分类器）</li>
+</ul>
+<p><img src="https://s1.ax1x.com/2020/07/01/NTFbIx.png" alt="NTFbIx.png"></p>
+<p>交叉熵描述的是两个分布间的一个关系。</p>
+<p>这个损失函数区别于上面的hinge loss 没有安全距离这个概念，从概率分布的角度来看，一共有【狗🐶、猫🐱、象🐘】三种选项，假设图像是只猫，那么猫的概率为1其他为0，即标准答案为【0，1，0】，再用另外一种方式得到一个概率向量，下面介绍这个所谓的另外一种方式。</p>
+<p>已知结果有S1，S2，S3三个score，在此基础上计算对三个score进行处理得到：<br>$$<br>[e^{s_1} e^{s_2} e^{s_3}]<br>$$<br>对上面的处理得到的值做归一化<br>$$<br>[\frac{e^{s_1}}{\sum_{i=1}^{n=3}e^{s_i}}   \frac{e^{s_1}}{\sum_{i=1}^{n=3}e^{s_i}}   \frac{e^{s_1}}{\sum_{i=1}^{n=3}e^{s_i}}]<br>$$</p>
+<p>可能有人会问，这里为什么要用指数呢？为什么不把他们加在一起除呢？</p>
+<p>这是因为得分可能是负值，但是我们希望出来的是一个概率，是一个正数。得到正数后，做一个归一化，即看这个概率有多高。</p>
+<p>假设最后通过上面归一化得出来的概率向量是【0.9 0.05 0.5】。</p>
+<p>接下来就是求【0 1 0】和【0.9 0.05 0.5】这两个概率向量的差异度有多高，这个时候需要用到交叉熵损失函数，可以从最大似然角度考虑，标准答案是0 1 0，则我们希望的是中间的个概率是最高的。</p>
+<p>从log最大似然来考虑，我们希望<br>$$<br>logP_猫的值最大，这样就能和标准答案接近。<br>$$<br>$$<br>接下来再进行处理，加了个负号，-logP_猫，则是希望它最小，只有这样这个分类器拿到在猫上的置信度才是最高的<br>$$</p>
+<p>可能有人会问，为什么最后取个log？</p>
+<p>因为如果不取，概率连乘，概率本身是个很小的值，怕会损失精度（超过计算机计算的精度），所以取个log，相乘就变成了相加，保证了精度。这也是工程上经常会使用的。</p>
+<p><img src="https://s1.ax1x.com/2020/07/01/NTcIcn.png" alt="NTcIcn.png"></p>
+<p>在分类问题这里mean square error损失函数（均方差）就不适宜了，因为它是非凸的，非凸函数优化较为麻烦。</p>
+<p>至于log的底数，一般以2为底数。</p>
+<p>最下面的公式里的C，是为了工程计算方便，加一个常数C稳定幅度。</p>
+<p>上面公式中j是代表所有的类别，yi代表第i个类别得分。</p>
+<p>下图是带入例子中两种损失函数使用的图解。</p>
+<p><img src="https://s1.ax1x.com/2020/07/01/NT2fQs.png" alt="NT2fQs.png"></p>
+<h3 id="神经网络简介"><a href="#神经网络简介" class="headerlink" title="神经网络简介"></a>神经网络简介</h3><p>我们可以将神经网络看作一个黑盒子，我们希望通过神经网络这个黑盒子将我们输入的数据进行处理，得到我们想要的结果，如下图所示。</p>
+<p><img src="http://yanxuan.nosdn.127.net/aab9e2ed56647928cef529bee83a76df.png" alt="UTOOLS1594200061221.png"></p>
+<p>神经网络主要由输入层、隐藏层、输出层、神经元这几个部件组成。</p>
+<p>输入层是数据的输入层。隐藏层是对原始数据做一个特征提取，可能是局部特征的抽取，做一个交叉和组合。神经元里则设置了相应的激活函数，对输入的数据进行处理。输出层则是将最后处理的结果进行一个输出。</p>
+<p><img src="http://yanxuan.nosdn.127.net/db7fbf30e2ce1fa537cae419a18b2069.png" alt="UTOOLS1594197354786.png"></p>
+<h4 id="从逻辑回归到神经元“感知器”"><a href="#从逻辑回归到神经元“感知器”" class="headerlink" title="从逻辑回归到神经元“感知器”"></a>从逻辑回归到神经元“感知器”</h4><p>对于逻辑回归，它是一个简单的线性分类器，将输入向量，做一个线性组合得到值z，再通过sigmoid，当z取值非常大，sigmoid近似1，非常小，近似0。他可以把任何连续的值做一个压缩，压缩到0到1之间。这个特性，使得能够将任何连续的值压缩成0-1之间的一个概率值，用法有很多。下图的sita0、sita1、sita2是一个权重（biase）。</p>
+<p>sigmoid函数的求导：f‘(x)=f(x)[1-f(x)]</p>
+<p><img src="http://yanxuan.nosdn.127.net/328d68919f672c208dbc5cbeded7cce0.png" alt="UTOOLS1594197339925.png"></p>
+<p>浅层神经网络我们简称为“SNN”，深度神经网络简称为“DNN”。</p>
+<p><img src="http://yanxuan.nosdn.127.net/91f34d0cbf836ceff5ca60c4e7c46cb8.png" alt="UTOOLS1594197324506.png"></p>
+<h3 id="神经网络非线性能力及原理"><a href="#神经网络非线性能力及原理" class="headerlink" title="神经网络非线性能力及原理"></a>神经网络非线性能力及原理</h3><h4 id="神经网络非线性切分"><a href="#神经网络非线性切分" class="headerlink" title="神经网络非线性切分"></a>神经网络非线性切分</h4><p>下面的图片可以发现，数据的分布不是线性的，我们无法用线性的分类器对数据进行划分，那么我们该怎么办呢？</p>
+<p>这里就要讲讲关于神经元完成“与”和“或”操作了。</p>
+<p><img src="https://s1.ax1x.com/2020/07/01/NT4oPf.png" alt="NT4oPf.png"></p>
+<h4 id="神经网络完成逻辑与"><a href="#神经网络完成逻辑与" class="headerlink" title="神经网络完成逻辑与"></a>神经网络完成逻辑与</h4><p>如下图的神经网络，由一层输入层，一层输出层和一些神经元组成。中间黄色圈的神经元激活函数为sigmoid函数，其函数图像如下所示。</p>
+<p><img src="http://yanxuan.nosdn.127.net/2e2ea20fad77a07343a46d6562baf164.png" alt="UTOOLS1594392081153.png"></p>
+<p>假设权重：<br>$$<br>\theta_0=-30,\theta_1=20,\theta_2=20<br>$$<br>假设两个输入x1=x2=0，带入函数如下：<br>$$<br>sigmoid(\theta_0+\theta_1x_1+\theta_2x_2)<br>$$</p>
+<p>$$<br>output:sigmoid(-30)<br>$$</p>
+<p>根据上图函数曲线，我们可以看到，x值为-30时，sigmoid函数近似等于0。而当x1和x2取值都为1时，代入sigmoid函数即可得到1，这便达到了逻辑与的效果。具体如下图所示。</p>
+<p><img src="http://yanxuan.nosdn.127.net/fe568485e4a668c8ded2687ae22d1a06.png" alt="UTOOLS1594197292092.png"></p>
+<p>再举个例子，可以看到下图，以上图为基础，添加了一层隐藏层，神经元激活函数为sigmoid，这就完成了一个“与”的操作，完成了下图中靠近右侧的平面的非线性的切分。</p>
+<p><img src="http://yanxuan.nosdn.127.net/591513d671f758ef7669c1f15f0253c7.png" alt="UTOOLS1594197279185.png"></p>
+<h4 id="神经元完成“或”操作"><a href="#神经元完成“或”操作" class="headerlink" title="神经元完成“或”操作"></a>神经元完成“或”操作</h4><p>神经元完成“或”操作大体也同上边完成“与”操作类似，不同的地方在于权重的调整。</p>
+<p><img src="http://yanxuan.nosdn.127.net/5bf18d0f34a03c048cf590fe32a6c9b3.png" alt="UTOOLS1594197207406.png"></p>
+<p>由上面内容可知，当有and和or操作之后，就可以做各种各样的空间划分。</p>
+<p>用线性分类器进行分类，下方为1上方为0代表绿色或非绿色，最后通过AND，即可把区域抠出来。</p>
+<p><img src="http://yanxuan.nosdn.127.net/4aed82d1ef3eb25fadf8f2000e388043.png" alt="UTOOLS1594197125816.png"></p>
+<p>类似的，把其他绿色的抠出来后，用OR操作，即可把绿色选出来。</p>
+<p><img src="http://yanxuan.nosdn.127.net/47aaebb6420b4d345a1e730b94689250.png" alt="UTOOLS1594197098686.png"></p>
+<p>单隐层的神经网络可以逼近任何连续函数（只要隐层神经元数够多），找到很多起点终点很接近的小线段做组合，即可组成一个曲线。</p>
+<p><img src="http://yanxuan.nosdn.127.net/d5b3d9a49ec67d4deae24bbb34a193a8.png" alt="UTOOLS1594197043692.png"></p>
+<p>工程上，一般取多个隐藏层，每个层少量的神经元。一般简单的分类问题的隐层个数2-3个就好了。</p>
+<h3 id="神经网络表达力和过拟合"><a href="#神经网络表达力和过拟合" class="headerlink" title="神经网络表达力和过拟合"></a>神经网络表达力和过拟合</h3><p>但是当神经元非常多时，它的表达能力会很强，当它表达能力很强而你又不做控制时，会带来一些问题。比如它强到能够把每一个样本都记下来。</p>
+<p><img src="http://yanxuan.nosdn.127.net/d44bc5002c9bead4c1d6550c9a030b04.png" alt="UTOOLS1594197023784.png"></p>
+<p>dropput是缓解过拟合的一种正则化手段，这里不做详细介绍。</p>
+<h3 id="神经网络结构"><a href="#神经网络结构" class="headerlink" title="神经网络结构"></a>神经网络结构</h3><p><img src="http://yanxuan.nosdn.127.net/f3a3e3f8d5bdc157906ee9974ba5cccf.png" alt="UTOOLS1594197009192.png"></p>
+<h3 id="神经网络传递函数"><a href="#神经网络传递函数" class="headerlink" title="神经网络传递函数"></a>神经网络传递函数</h3><p><img src="http://yanxuan.nosdn.127.net/2a21def11b9384e522797165dd0aae99.png" alt="UTOOLS1594199899789.png"></p>
+<p>在神经网络中，每增加一个隐藏层，就会对输出做一个非线性处理，进行这种处理的函数叫做激活函数。那么为什么需要激活函数呢？</p>
+<p>举个例子：<br>$$<br>比如一层的输出为wx+b,如果不做非线性处理，到第二层为w’(wx+b)+b,结果为：<br>$$</p>
+<p>$$<br>w’wx+w’b+b<br>$$</p>
+<p> 可见结果仍然是一个线性的函数，所以加了一层等于没加。所以需要f(x)<br>$$<br>f(wx+b)<br>$$</p>
+<h3 id="神经网络之Back-Propogration算法"><a href="#神经网络之Back-Propogration算法" class="headerlink" title="神经网络之Back Propogration算法"></a>神经网络之Back Propogration算法</h3><p>反向传播可以获得损失函数最小化的方向，返回的是一个修正值，不会对参数进行更新，参数更新的其中一种方法叫SGD。</p>
+<p><img src="http://yanxuan.nosdn.127.net/6506b6d028b77ad7cf7c5d9dc8dc2562.png" alt="UTOOLS1594199886720.png"></p>
+<p>如下图，假设O是 output，d是标准答案。</p>
+<p><img src="http://yanxuan.nosdn.127.net/e14fadd547b9f2914ebbea95d87e0a90.png" alt="UTOOLS1594199874435.png"></p>
+<p>我们会将O和d去做一个差值，用mean square error（用于回归问题），然后往前追溯产生这个误差的根源。在神经网络中这个根源往往是指“w”，即权重。所以需要找到w更新的一个方向。</p>
+<p><img src="http://yanxuan.nosdn.127.net/168829abbdf831ef72610e538abb331d.png" alt="UTOOLS1594199858094.png"></p>
+<h3 id="神经网络之SGD"><a href="#神经网络之SGD" class="headerlink" title="神经网络之SGD"></a>神经网络之SGD</h3><p>找误差最小，即对loss函数进行求导，求最小值。神经网络中许多loss函数都是非凸的，很多时候只能找到局部最优，但只要误差在工程应用的允许范围内，我们就可以使用。</p>
+<p>这种方法又称为梯度下降。</p>
+<p>找到一个梯度后，将第一层和第二层的参数沿着这个梯度做迭代。</p>
+<p><img src="http://yanxuan.nosdn.127.net/9cbb85b549ea247d30efc439f8a80400.png" alt="UTOOLS1594199844826.png"></p>
+<p>回归类的问题用的loss function 都是mean square error，不用边际loss、hinge loss等。loss function=0有两种可能，第一是 loss function 选不对或者定义不对。第二种，中大奖了，不小心找到了最优的一组参数。</p>
+<p>假设现在要解决回归类的问题，如下图，黑色字体I1，I2是输入。输入层的蓝色的是权重，最下面的是偏制项，b1 * 1。要求输出是输出层蓝色字体。中间层的红色字体是随机的权重。</p>
+<p><img src="http://yanxuan.nosdn.127.net/c8e9352b834524d7389010708b3e1ee5.png" alt="UTOOLS1594199832918.png"></p>
+<p>下面是进行计算。</p>
+<p><img src="http://yanxuan.nosdn.127.net/014a1144d91c978d59dfe340adcfd0eb.png" alt="UTOOLS1594199804164.png"></p>
+<p>可以看到，最后两组的输出为[0.75,0.77]，目标输出是[0.01,0.99]，通过MSE误差函数进行计算，得到loss值为0.298，后面就是在此基础上修正。</p>
+<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p><img src="http://yanxuan.nosdn.127.net/74d19907e94ecd0c31c3c3f0788760ab.png" alt="UTOOLS1594199790734.png"></p>
+<p>由于最后的loss由前面两个函数得到，所以求梯度应该也涉及两个函数。</p>
+<p><img src="http://yanxuan.nosdn.127.net/a897eeee94e7c9f02ce4e4824ce4f657.png" alt="UTOOLS1594199768211.png"></p>
+<p>可以理解为h（g(f(x))），这样求导就相当于三个结果相乘<br>$$<br>\eta:学习率，控制它每一次跨多大步<br>$$</p>
+<p>DeepLearning的基础就介绍到这里，希望大家有所收货！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:hjabari@qq.com">JabariH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/07/08/DeepLearning%E5%9F%BA%E7%A1%80/">http://example.com/2020/07/08/DeepLearning基础/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Jabari</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2020/07/08/UVWeTe.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/07/16/%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB%E5%8E%9F%E7%90%86--%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9CCNN%E8%AF%A6%E8%A7%A3/"><img class="prev-cover" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">图像识别原理--卷积神经网络CNN详解</div></div></a></div><div class="next-post pull-right"><a href="/2020/07/04/LightGBM%E7%AE%97%E6%B3%95%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="next-cover" src="https://s1.ax1x.com/2020/07/04/Nx4URH.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LightGBM算法框架学习笔记</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/07/04/LightGBM算法框架学习笔记/" title="LightGBM算法框架学习笔记"><img class="cover" src="https://s1.ax1x.com/2020/07/04/Nx4URH.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-04</div><div class="title">LightGBM算法框架学习笔记</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/null" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">JabariH</div><div class="author-info__description">做知识的学习者与分享者</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Whiteco-okie"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Whiteco-okie" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:innocenfox@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="/975490564" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#DeepLearning%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">DeepLearning基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">背景介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%BA%94%E7%94%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.深度学习应用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8C%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-number">1.3.</span> <span class="toc-text">线性分类器和神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E5%88%86%E7%B1%BB%E5%99%A8%E5%BE%97%E5%88%86%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.1.</span> <span class="toc-text">线性分类器得分函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.2.</span> <span class="toc-text">损失函数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AE%80%E4%BB%8B"><span class="toc-number">1.4.</span> <span class="toc-text">神经网络简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%88%B0%E7%A5%9E%E7%BB%8F%E5%85%83%E2%80%9C%E6%84%9F%E7%9F%A5%E5%99%A8%E2%80%9D"><span class="toc-number">1.4.1.</span> <span class="toc-text">从逻辑回归到神经元“感知器”</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E9%9D%9E%E7%BA%BF%E6%80%A7%E8%83%BD%E5%8A%9B%E5%8F%8A%E5%8E%9F%E7%90%86"><span class="toc-number">1.5.</span> <span class="toc-text">神经网络非线性能力及原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%88%87%E5%88%86"><span class="toc-number">1.5.1.</span> <span class="toc-text">神经网络非线性切分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%8C%E6%88%90%E9%80%BB%E8%BE%91%E4%B8%8E"><span class="toc-number">1.5.2.</span> <span class="toc-text">神经网络完成逻辑与</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E5%85%83%E5%AE%8C%E6%88%90%E2%80%9C%E6%88%96%E2%80%9D%E6%93%8D%E4%BD%9C"><span class="toc-number">1.5.3.</span> <span class="toc-text">神经元完成“或”操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%A1%A8%E8%BE%BE%E5%8A%9B%E5%92%8C%E8%BF%87%E6%8B%9F%E5%90%88"><span class="toc-number">1.6.</span> <span class="toc-text">神经网络表达力和过拟合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="toc-number">1.7.</span> <span class="toc-text">神经网络结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BC%A0%E9%80%92%E5%87%BD%E6%95%B0"><span class="toc-number">1.8.</span> <span class="toc-text">神经网络传递函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B9%8BBack-Propogration%E7%AE%97%E6%B3%95"><span class="toc-number">1.9.</span> <span class="toc-text">神经网络之Back Propogration算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B9%8BSGD"><span class="toc-number">1.10.</span> <span class="toc-text">神经网络之SGD</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="toc-number">1.10.1.</span> <span class="toc-text">反向传播</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/01/22/Python%E5%BC%80%E5%8F%91/" title="Python开发"><img src="https://files.catbox.moe/rgw8dr.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python开发"/></a><div class="content"><a class="title" href="/2021/01/22/Python%E5%BC%80%E5%8F%91/" title="Python开发">Python开发</a><time datetime="2021-01-22T10:19:59.000Z" title="发表于 2021-01-22 18:19:59">2021-01-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/21/hello-world/" title="Hello World"><img src="https://files.catbox.moe/rgw8dr.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2021/01/21/hello-world/" title="Hello World">Hello World</a><time datetime="2021-01-21T15:34:45.223Z" title="发表于 2021-01-21 23:34:45">2021-01-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/07/26/%E9%AB%98%E6%95%88%E5%8A%9E%E5%85%ACtips/" title="高效办公学习Tips，你值得拥有！"><img src="http://yanxuan.nosdn.127.net/ca2a2a50dad4ca1415f4c181c244bd71.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高效办公学习Tips，你值得拥有！"/></a><div class="content"><a class="title" href="/2020/07/26/%E9%AB%98%E6%95%88%E5%8A%9E%E5%85%ACtips/" title="高效办公学习Tips，你值得拥有！">高效办公学习Tips，你值得拥有！</a><time datetime="2020-07-26T08:00:00.000Z" title="发表于 2020-07-26 16:00:00">2020-07-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/07/16/%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB%E5%8E%9F%E7%90%86--%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9CCNN%E8%AF%A6%E8%A7%A3/" title="图像识别原理--卷积神经网络CNN详解"><img src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="图像识别原理--卷积神经网络CNN详解"/></a><div class="content"><a class="title" href="/2020/07/16/%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB%E5%8E%9F%E7%90%86--%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9CCNN%E8%AF%A6%E8%A7%A3/" title="图像识别原理--卷积神经网络CNN详解">图像识别原理--卷积神经网络CNN详解</a><time datetime="2020-07-16T04:26:02.000Z" title="发表于 2020-07-16 12:26:02">2020-07-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/07/08/DeepLearning%E5%9F%BA%E7%A1%80/" title="DeepLearning基础"><img src="https://s1.ax1x.com/2020/07/08/UVWeTe.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="DeepLearning基础"/></a><div class="content"><a class="title" href="/2020/07/08/DeepLearning%E5%9F%BA%E7%A1%80/" title="DeepLearning基础">DeepLearning基础</a><time datetime="2020-07-08T08:00:00.000Z" title="发表于 2020-07-08 16:00:00">2020-07-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://s1.ax1x.com/2020/07/08/UVWeTe.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By JabariH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="#">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>
