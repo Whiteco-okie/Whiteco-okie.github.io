@@ -1,0 +1,434 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句 | Jabari</title><meta name="keywords" content="DataWhale开源组队学习,知识图谱"><meta name="author" content="JabariH,hjabari@qq.com"><meta name="copyright" content="JabariH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="知识图谱实践案例详解~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句">
+<meta property="og:url" content="http://example.com/2021/01/27/2021-1-27-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task04-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/index.html">
+<meta property="og:site_name" content="Jabari">
+<meta property="og:description" content="知识图谱实践案例详解~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127150721844.png">
+<meta property="article:published_time" content="2021-01-27T07:26:02.000Z">
+<meta property="article:modified_time" content="2021-01-27T07:08:05.925Z">
+<meta property="article:author" content="JabariH">
+<meta property="article:tag" content="DataWhale开源组队学习">
+<meta property="article:tag" content="知识图谱">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127150721844.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/01/27/2021-1-27-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task04-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":100,"languages":{"author":"作者: JabariH","link":"链接: ","source":"来源: Jabari","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2021-01-27 15:08:05'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}const fontSizeVal = saveToLocal.get('global-font-size')
+if (fontSizeVal !== undefined) {
+  document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/friend_404.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127150721844.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jabari</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-01-27T07:26:02.000Z" title="发表于 2021-01-27 15:26:02">2021-01-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-01-27T07:08:05.925Z" title="更新于 2021-01-27 15:08:05">2021-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">知识图谱</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Datawhale-知识图谱组队学习-之-Task-4-用户输入-gt-知识库的查询语句"><a href="#Datawhale-知识图谱组队学习-之-Task-4-用户输入-gt-知识库的查询语句" class="headerlink" title="Datawhale 知识图谱组队学习 之 Task 4 用户输入-&gt;知识库的查询语句"></a>Datawhale 知识图谱组队学习 之 Task 4 用户输入-&gt;知识库的查询语句</h1><h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>本部分任务主要是<strong>将用户输入问答系统的自然语言转化成知识库的查询语句</strong>，因此本文将分成两部分进行介绍。</p>
+<ul>
+<li>第一部分介绍任务所涉及的背景知识;</li>
+<li>第二部分则是相应的代码和其注释</li>
+</ul>
+<h2 id="二、什么是问答系统？"><a href="#二、什么是问答系统？" class="headerlink" title="二、什么是问答系统？"></a>二、什么是问答系统？</h2><h3 id="2-1-问答系统简介"><a href="#2-1-问答系统简介" class="headerlink" title="2.1 问答系统简介"></a>2.1 问答系统简介</h3><p>问答系统(Question Answering System，QA System)是用来回答人提出的自然语言问题的系统。根据划分标准不同，问答系统可以被分为各种不同的类型。</p>
+<ul>
+<li>问答系统从知识领域划分：<ul>
+<li>封闭领域：封闭领域系统专注于回答特定领域的问题，由于问题领域受限，系统有比较大的发挥空间，可以导入领域知识或将答案来源全部转换成结构性资料来有效提升系统的表现；</li>
+<li>开放领域：开放领域系统则希望不设限问题的内容范围，因此其难度也相对较大。</li>
+</ul>
+</li>
+<li>问答系统从实现方式划分：<ul>
+<li>基于流水线（pipeline）实现：如下图 1 所示，基于流水线实现的问答系统有四大核心模块，分别由自然语言理解（NLU）、对话状态跟踪器（DST）、对话策略（DPL）和自然语言生成（NLG）依次串联构成的一条流水线，各模块可独立设计，模块间协作完成任务。</li>
+<li>基于端到端（end-to-end）实现：基于端到端实现的问答系统，主要是结合深度学习技术，通过海量数据训练，挖掘出从用户自然语言输入到系统自然语言输出的整体映射关系，而忽略中间过程的一种方法。但就目前工业界整体应用而言，工业界的问答系统目前大多采用的还是基于流水线实现的方式。</li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/a7c1f13af7cbee7b32eebdb03f1629a0b22ab4c7e64e1972a33ad3e116834b4b/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d313661613335376237626535613634362e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f3831362f666f726d61742f77656270"><img src="https://camo.githubusercontent.com/a7c1f13af7cbee7b32eebdb03f1629a0b22ab4c7e64e1972a33ad3e116834b4b/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d313661613335376237626535613634362e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f3831362f666f726d61742f77656270" alt="img"></a></p>
+<blockquote>
+<p>图 1 基于流水线（pipeline）实现</p>
+</blockquote>
+<ul>
+<li>问答系统从答案来源划分：<ul>
+<li>「知识库问答」。是目前的研究热点。知识库问答（knowledge base question answering, KB-QA）即给定自然语言问题，通过对问题进行语义理解和解析，进而利用知识库进行查询、推理得出答案。如下图 2 所示：</li>
+<li>「常问问题问答」；</li>
+<li>「新闻问答」；</li>
+<li>「网际网路问答」；</li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/7728039e07331d787c418179b46b4fc741c72e4f9bb7b75b590242257311052a/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d616662343161613233666565313363372e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430"><img src="https://camo.githubusercontent.com/7728039e07331d787c418179b46b4fc741c72e4f9bb7b75b590242257311052a/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d616662343161613233666565313363372e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="img"></a></p>
+<blockquote>
+<p>图 2 知识库问答</p>
+</blockquote>
+<h3 id="2-2-Query理解"><a href="#2-2-Query理解" class="headerlink" title="2.2 Query理解"></a>2.2 Query理解</h3><h4 id="2-2-1-Query理解介绍"><a href="#2-2-1-Query理解介绍" class="headerlink" title="2.2.1 Query理解介绍"></a>2.2.1 Query理解介绍</h4><p>Query理解 (QU，Query Understanding)，简单来说就是从词法、句法、语义三个层面对 Query 进行结构化解析。</p>
+<ul>
+<li>搜索 Query 理解包含的模块主要有：<ul>
+<li>Query预处理</li>
+<li>Query纠错</li>
+<li>Query扩展</li>
+<li>Query归一</li>
+<li>意图识别</li>
+<li>槽值填充</li>
+<li>Term重要性分析；</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<p>由于本任务后面代码主要涉及意图识别和槽位解析，因此这里仅对这两部分内容做介绍：</p>
+<h4 id="2-2-2-意图识别"><a href="#2-2-2-意图识别" class="headerlink" title="2.2.2 意图识别"></a>2.2.2 意图识别</h4><ul>
+<li>介绍：意图识别是用来检测用户当前输入的意图，通常其被建模为将一段自然语言文本分类为预先设定的一个或多个意图的文本分类任务。</li>
+<li>所用方法：和文本分类模型的方法大同小异，主要有：<ul>
+<li>基于词典模板的规则分类</li>
+<li>传统的机器学习模型（文本特征工程+分类器）</li>
+<li>深度学习模型（Fasttext、TextCNN、BiLSTM + Self-Attention、BERT等）</li>
+</ul>
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/2100e54d7423882889ca29575b7379e7daf05b7a9b1050025af87d3966e85f11/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d343637633562653838343330333039312e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430"><img src="https://camo.githubusercontent.com/2100e54d7423882889ca29575b7379e7daf05b7a9b1050025af87d3966e85f11/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d343637633562653838343330333039312e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="img"></a></p>
+<blockquote>
+<p>图 3 意图识别</p>
+</blockquote>
+<h4 id="2-2-3-槽值填充"><a href="#2-2-3-槽值填充" class="headerlink" title="2.2.3 槽值填充"></a>2.2.3 槽值填充</h4><ul>
+<li>介绍：槽值填充就是根据我们既定的一些结构化字段，将用户输入的信息中与其对应的部分提取出来。因此，槽值填充经常被建模为序列标注的任务。</li>
+<li>举例介绍：例如下图所示的 Query “北京飞成都的机票”，通过意图分类模型可以识别出 Query 的整体意图是订机票，在此基础上进一步语义解析出对应的出发地 Depart=”北京”，到达地 Arrive=”成都”，所以生成的形式化表达可以是：Ticket=Order(Depart,Arrive)，Depart={北京}，Arrive={成都}。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/c937793c3965c5a6c7bf7cc082e7dd6ccaade8019cf2fc69ab39cd1947ebcbff/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d323561613564303536306466656531612e6a70673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430"><img src="https://camo.githubusercontent.com/c937793c3965c5a6c7bf7cc082e7dd6ccaade8019cf2fc69ab39cd1947ebcbff/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d323561613564303536306466656531612e6a70673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="img"></a></p>
+<blockquote>
+<p>图 4 槽值填充</p>
+</blockquote>
+<ul>
+<li>序列标注的任务常用的模型有：【注：这部分内容，第二期知识图谱组队学习将进行介绍】<ul>
+<li>词典匹配；</li>
+<li>BiLSTM + CRF；</li>
+<li>IDCNN</li>
+<li>BERT等。</li>
+</ul>
+</li>
+</ul>
+<h2 id="三、任务实践"><a href="#三、任务实践" class="headerlink" title="三、任务实践"></a>三、任务实践</h2><p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/cf91302753ad7c5056367edbd895f999447ddf14e27b2d069938de426ba3a30e/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d333232373835353733343835383935642e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430"><img src="https://camo.githubusercontent.com/cf91302753ad7c5056367edbd895f999447ddf14e27b2d069938de426ba3a30e/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d333232373835353733343835383935642e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="img"></a></p>
+<blockquote>
+<p>图 5 基于知识图谱的问答系统框架</p>
+</blockquote>
+<h3 id="四、-主体类-EntityExtractor-框架介绍"><a href="#四、-主体类-EntityExtractor-框架介绍" class="headerlink" title="四、 主体类 EntityExtractor 框架介绍"></a>四、 主体类 EntityExtractor 框架介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line"># coding: utf-8</span><br><span class="line">import os</span><br><span class="line">import ahocorasick</span><br><span class="line">from sklearn.externals import joblib</span><br><span class="line">import jieba</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">class EntityExtractor:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 构造actree，加速过滤</span><br><span class="line">    def build_actree(self, wordlist):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        构造actree，加速过滤</span><br><span class="line">        :param wordlist:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line">    # 模式匹配, 得到匹配的词和类型。如疾病，疾病别名，并发症，症状</span><br><span class="line">    def entity_reg(self, question):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        模式匹配, 得到匹配的词和类型。如疾病，疾病别名，并发症，症状</span><br><span class="line">        :param question:str</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 当全匹配失败时，就采用相似度计算来找相似的词</span><br><span class="line">    def find_sim_words(self, question):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        当全匹配失败时，就采用相似度计算来找相似的词</span><br><span class="line">        :param question:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 采用DP方法计算编辑距离</span><br><span class="line">    def editDistanceDP(self, s1, s2):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        采用DP方法计算编辑距离</span><br><span class="line">        :param s1:</span><br><span class="line">        :param s2:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 计算词语和字典中的词的相似度</span><br><span class="line">    def simCal(self, word, entities, flag):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        计算词语和字典中的词的相似度</span><br><span class="line">        相同字符的个数&#x2F;min(|A|,|B|)   +  余弦相似度</span><br><span class="line">        :param word: str</span><br><span class="line">        :param entities:List</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 基于特征词分类</span><br><span class="line">    def check_words(self, wds, sent):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        基于特征词分类</span><br><span class="line">        :param wds:</span><br><span class="line">        :param sent:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 提取问题的TF-IDF特征</span><br><span class="line">    def tfidf_features(self, text, vectorizer):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        提取问题的TF-IDF特征</span><br><span class="line">        :param text:</span><br><span class="line">        :param vectorizer:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 提取问题的关键词特征</span><br><span class="line">    def other_features(self, text):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        提取问题的关键词特征</span><br><span class="line">        :param text:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 预测意图</span><br><span class="line">    def model_predict(self, x, model):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        预测意图</span><br><span class="line">        :param x:</span><br><span class="line">        :param model:</span><br><span class="line">        :return:</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">    # 实体抽取主函数</span><br><span class="line">    def extractor(self, question):</span><br><span class="line">        pass</span><br></pre></td></tr></table></figure>
+<h2 id="五、命名实体识别任务实践"><a href="#五、命名实体识别任务实践" class="headerlink" title="五、命名实体识别任务实践"></a>五、命名实体识别任务实践</h2><h3 id="5-1-命名实体识别整体思路介绍"><a href="#5-1-命名实体识别整体思路介绍" class="headerlink" title="5.1 命名实体识别整体思路介绍"></a>5.1 命名实体识别整体思路介绍</h3><ul>
+<li>step 1：对于用户的输入，先使用预先构建的疾病、疾病别名、并发症和症状的AC Tree进行匹配；</li>
+<li>step 2：若全都无法匹配到相应实体，则使用结巴切词库对用户输入的文本进行切分；</li>
+<li>step 3：然后将每一个词都去与疾病词库、疾病别名词库、并发症词库和症状词库中的词计算相似度得分（overlap score、余弦相似度分数和编辑距离分数），如果相似度得分超过0.7，则认为该词是这一类实体；</li>
+<li>step 4：最后排序选取最相关的词作为实体（项目所有的实体类型如下图所示，但实体识别时仅使用了疾病、别名、并发症和症状四种实体）</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/5998525d13471025f3af1c86b121433d951f365c87202788e6b2332feeadd4a9/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d623539336463633036643935626233352e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430"><img src="https://camo.githubusercontent.com/5998525d13471025f3af1c86b121433d951f365c87202788e6b2332feeadd4a9/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d623539336463633036643935626233352e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="img"></a></p>
+<blockquote>
+<p>图 6 实体介绍</p>
+</blockquote>
+<p>本部分所有的代码都来自 entity_extractor.py 中的 EntityExtractor 类，为了方便讲解，对类内的内容进行重新组织注释</p>
+<h3 id="5-2-结合代码介绍"><a href="#5-2-结合代码介绍" class="headerlink" title="5.2 结合代码介绍"></a>5.2 结合代码介绍</h3><h4 id="5-2-1-构建-AC-Tree"><a href="#5-2-1-构建-AC-Tree" class="headerlink" title="5.2.1 构建 AC Tree"></a>5.2.1 构建 AC Tree</h4><p>先通过 entity_extractor.py 中 类 EntityExtractor 的 build_actree 函数构建AC Tree</p>
+<ul>
+<li>函数模块</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def build_actree(self, wordlist):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    构造actree，加速过滤</span><br><span class="line">    :param wordlist:</span><br><span class="line">    :return:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    actree &#x3D; ahocorasick.Automaton()</span><br><span class="line">    # 向树中添加单词</span><br><span class="line">    for index, word in enumerate(wordlist):</span><br><span class="line">        actree.add_word(word, (index, word))</span><br><span class="line">    actree.make_automaton()</span><br><span class="line">    return actree</span><br></pre></td></tr></table></figure>
+<ul>
+<li>函数调用模块</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self):</span><br><span class="line">    ...</span><br><span class="line">    self.disease_path &#x3D; cur_dir + &#39;disease_vocab.txt&#39;</span><br><span class="line">    self.symptom_path &#x3D; cur_dir + &#39;symptom_vocab.txt&#39;</span><br><span class="line">    self.alias_path &#x3D; cur_dir + &#39;alias_vocab.txt&#39;</span><br><span class="line">    self.complication_path &#x3D; cur_dir + &#39;complications_vocab.txt&#39;</span><br><span class="line"></span><br><span class="line">    self.disease_entities &#x3D; [w.strip() for w in open(self.disease_path, encoding&#x3D;&#39;utf8&#39;) if w.strip()]</span><br><span class="line">    self.symptom_entities &#x3D; [w.strip() for w in open(self.symptom_path, encoding&#x3D;&#39;utf8&#39;) if w.strip()]</span><br><span class="line">    self.alias_entities &#x3D; [w.strip() for w in open(self.alias_path, encoding&#x3D;&#39;utf8&#39;) if w.strip()]</span><br><span class="line">    self.complication_entities &#x3D; [w.strip() for w in open(self.complication_path, encoding&#x3D;&#39;utf8&#39;) if w.strip()]</span><br><span class="line"></span><br><span class="line">    self.region_words &#x3D; list(set(self.disease_entities+self.alias_entities+self.symptom_entities))</span><br><span class="line"></span><br><span class="line">    # 构造领域actree</span><br><span class="line">    self.disease_tree &#x3D; self.build_actree(list(set(self.disease_entities)))</span><br><span class="line">    self.alias_tree &#x3D; self.build_actree(list(set(self.alias_entities)))</span><br><span class="line">    self.symptom_tree &#x3D; self.build_actree(list(set(self.symptom_entities)))</span><br><span class="line">    self.complication_tree &#x3D; self.build_actree(list(set(self.complication_entities)))</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h4 id="5-2-2-使用AC-Tree进行问句过滤"><a href="#5-2-2-使用AC-Tree进行问句过滤" class="headerlink" title="5.2.2 使用AC Tree进行问句过滤"></a>5.2.2 使用AC Tree进行问句过滤</h4><ul>
+<li>函数模块</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">def entity_reg(self, question):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    模式匹配, 得到匹配的词和类型。如疾病，疾病别名，并发症，症状</span><br><span class="line">    :param question:str</span><br><span class="line">    :return:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    self.result &#x3D; &#123;&#125;</span><br><span class="line"></span><br><span class="line">    for i in self.disease_tree.iter(question):</span><br><span class="line">        word &#x3D; i[1][1]</span><br><span class="line">        if &quot;Disease&quot; not in self.result:</span><br><span class="line">            self.result[&quot;Disease&quot;] &#x3D; [word]</span><br><span class="line">        else:</span><br><span class="line">            self.result[&quot;Disease&quot;].append(word)</span><br><span class="line"></span><br><span class="line">    for i in self.alias_tree.iter(question):</span><br><span class="line">        word &#x3D; i[1][1]</span><br><span class="line">        if &quot;Alias&quot; not in self.result:</span><br><span class="line">            self.result[&quot;Alias&quot;] &#x3D; [word]</span><br><span class="line">        else:</span><br><span class="line">            self.result[&quot;Alias&quot;].append(word)</span><br><span class="line"></span><br><span class="line">    for i in self.symptom_tree.iter(question):</span><br><span class="line">        wd &#x3D; i[1][1]</span><br><span class="line">        if &quot;Symptom&quot; not in self.result:</span><br><span class="line">            self.result[&quot;Symptom&quot;] &#x3D; [wd]</span><br><span class="line">        else:</span><br><span class="line">            self.result[&quot;Symptom&quot;].append(wd)</span><br><span class="line"></span><br><span class="line">    for i in self.complication_tree.iter(question):</span><br><span class="line">        wd &#x3D; i[1][1]</span><br><span class="line">        if &quot;Complication&quot; not in self.result:</span><br><span class="line">            self.result[&quot;Complication&quot;] &#x3D; [wd]</span><br><span class="line">        else:</span><br><span class="line">            self.result[&quot;Complication&quot;] .append(wd)</span><br><span class="line"></span><br><span class="line">    return self.result</span><br></pre></td></tr></table></figure>
+<ul>
+<li>函数调用模块</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def extractor(self, question):</span><br><span class="line">    self.entity_reg(question)</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h4 id="5-2-3-使用-相似度进行实体匹配"><a href="#5-2-3-使用-相似度进行实体匹配" class="headerlink" title="5.2.3 使用 相似度进行实体匹配"></a>5.2.3 使用 相似度进行实体匹配</h4><p>当AC Tree的匹配都没有匹配到实体时，使用查找相似词的方式进行实体匹配</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">def find_sim_words(self, question):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    当全匹配失败时，就采用相似度计算来找相似的词</span><br><span class="line">    :param question:</span><br><span class="line">    :return:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    import re</span><br><span class="line">    import string</span><br><span class="line">    from gensim.models import KeyedVectors</span><br><span class="line">    </span><br><span class="line">    # 使用结巴加载自定义词典</span><br><span class="line">    jieba.load_userdict(self.vocab_path)</span><br><span class="line">    # 加载词向量</span><br><span class="line">    self.model &#x3D; KeyedVectors.load_word2vec_format(self.word2vec_path, binary&#x3D;False)</span><br><span class="line">    </span><br><span class="line">    # 数据预处理，正则去除特殊符号</span><br><span class="line">    sentence &#x3D; re.sub(&quot;[&#123;&#125;]&quot;, re.escape(string.punctuation), question)</span><br><span class="line">    sentence &#x3D; re.sub(&quot;[，。‘’；：？、！【】]&quot;, &quot; &quot;, sentence)</span><br><span class="line">    sentence &#x3D; sentence.strip()</span><br><span class="line">    </span><br><span class="line">    # 使用结巴进行分词</span><br><span class="line">    words &#x3D; [w.strip() for w in jieba.cut(sentence) if w.strip() not in self.stopwords and len(w.strip()) &gt;&#x3D; 2]</span><br><span class="line"></span><br><span class="line">    alist &#x3D; []</span><br><span class="line">    </span><br><span class="line">    # 对每个词，都让其与每类实体词典进行相似对比，</span><br><span class="line">    # 最终选取分数最高的实体和其属于的实体类型</span><br><span class="line">    for word in words:</span><br><span class="line">        temp &#x3D; [self.disease_entities, self.alias_entities, self.symptom_entities, self.complication_entities]</span><br><span class="line">        for i in range(len(temp)):</span><br><span class="line">            flag &#x3D; &#39;&#39;</span><br><span class="line">            if i &#x3D;&#x3D; 0:</span><br><span class="line">                flag &#x3D; &quot;Disease&quot;</span><br><span class="line">            elif i &#x3D;&#x3D; 1:</span><br><span class="line">                flag &#x3D; &quot;Alias&quot;</span><br><span class="line">            elif i &#x3D;&#x3D; 2:</span><br><span class="line">                flag &#x3D; &quot;Symptom&quot;</span><br><span class="line">            else:</span><br><span class="line">                flag &#x3D; &quot;Complication&quot;</span><br><span class="line">            scores &#x3D; self.simCal(word, temp[i], flag)</span><br><span class="line">            alist.extend(scores)</span><br><span class="line">    temp1 &#x3D; sorted(alist, key&#x3D;lambda k: k[1], reverse&#x3D;True)</span><br><span class="line">    if temp1:</span><br><span class="line">        self.result[temp1[0][2]] &#x3D; [temp1[0][0]]</span><br><span class="line"></span><br><span class="line"># 计算词语和字典中的词的相似度</span><br><span class="line">def simCal(self, word, entities, flag):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    计算词语和字典中的词的相似度</span><br><span class="line">    相同字符的个数&#x2F;min(|A|,|B|)   +  余弦相似度</span><br><span class="line">    :param word: str</span><br><span class="line">    :param entities:List</span><br><span class="line">    :return:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    a &#x3D; len(word)</span><br><span class="line">    scores &#x3D; []</span><br><span class="line">    for entity in entities:</span><br><span class="line">        sim_num &#x3D; 0</span><br><span class="line">        b &#x3D; len(entity)</span><br><span class="line">        c &#x3D; len(set(entity+word))</span><br><span class="line">        temp &#x3D; []</span><br><span class="line">        for w in word:</span><br><span class="line">            if w in entity:</span><br><span class="line">                sim_num +&#x3D; 1</span><br><span class="line">        if sim_num !&#x3D; 0:</span><br><span class="line">            score1 &#x3D; sim_num &#x2F; c  # overlap score</span><br><span class="line">            temp.append(score1)</span><br><span class="line">        try:</span><br><span class="line">            score2 &#x3D; self.model.similarity(word, entity)  # 余弦相似度分数</span><br><span class="line">            temp.append(score2)</span><br><span class="line">        except:</span><br><span class="line">            pass</span><br><span class="line">        score3 &#x3D; 1 - self.editDistanceDP(word, entity) &#x2F; (a + b)  # 编辑距离分数</span><br><span class="line">        if score3:</span><br><span class="line">            temp.append(score3)</span><br><span class="line"></span><br><span class="line">        score &#x3D; sum(temp) &#x2F; len(temp)</span><br><span class="line">        if score &gt;&#x3D; 0.7:</span><br><span class="line">            scores.append((entity, score, flag))</span><br><span class="line"></span><br><span class="line">    scores.sort(key&#x3D;lambda k: k[1], reverse&#x3D;True)</span><br><span class="line">    return scores</span><br></pre></td></tr></table></figure>
+<h2 id="六、意图识别任务实践"><a href="#六、意图识别任务实践" class="headerlink" title="六、意图识别任务实践"></a>六、意图识别任务实践</h2><h3 id="6-1-意图识别整体思路介绍"><a href="#6-1-意图识别整体思路介绍" class="headerlink" title="6.1 意图识别整体思路介绍"></a>6.1 意图识别整体思路介绍</h3><ul>
+<li>step 1：利用TF-IDF表征文本特征，同时构建一些人工特征（每一类意图常见词在句子中出现的个数）；</li>
+<li>step 2：训练朴素贝叶斯模型进行意图识别任务；</li>
+<li>step 3：使用实体信息进行意图的纠正和补充。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/0c23eb205fe3837955efb5b0871d01c6f931a97243b032e5ef1c47f6fb237d72/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d363131336336343762383831653461612e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430"><img src="https://camo.githubusercontent.com/0c23eb205fe3837955efb5b0871d01c6f931a97243b032e5ef1c47f6fb237d72/68747470733a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f31303739383234342d363131336336343762383831653461612e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430" alt="img"></a></p>
+<blockquote>
+<p>图 7 意图识别整体举例介绍</p>
+</blockquote>
+<p>该项目通过手工标记210条意图分类训练数据，并采用朴素贝叶斯算法训练得到意图分类模型。其最佳测试效果的F1值达到了96.68%。</p>
+<h3 id="6-2-意图识别整体思路介绍"><a href="#6-2-意图识别整体思路介绍" class="headerlink" title="6.2 意图识别整体思路介绍"></a>6.2 意图识别整体思路介绍</h3><h4 id="6-2-1-特征构建"><a href="#6-2-1-特征构建" class="headerlink" title="6.2.1 特征构建"></a>6.2.1 特征构建</h4><ol>
+<li>TF-IDF特征</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 提取问题的TF-IDF特征</span><br><span class="line">def tfidf_features(self, text, vectorizer):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    提取问题的TF-IDF特征</span><br><span class="line">    :param text:</span><br><span class="line">    :param vectorizer:</span><br><span class="line">    :return:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    jieba.load_userdict(self.vocab_path)</span><br><span class="line">    words &#x3D; [w.strip() for w in jieba.cut(text) if w.strip() and w.strip() not in self.stopwords]</span><br><span class="line">    sents &#x3D; [&#39; &#39;.join(words)]</span><br><span class="line"></span><br><span class="line">    tfidf &#x3D; vectorizer.transform(sents).toarray()</span><br><span class="line">    return tfidf</span><br></pre></td></tr></table></figure>
+<ol>
+<li>人工特征</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">self.symptom_qwds &#x3D; [&#39;什么症状&#39;, &#39;哪些症状&#39;, &#39;症状有哪些&#39;, &#39;症状是什么&#39;, &#39;什么表征&#39;, &#39;哪些表征&#39;, &#39;表征是什么&#39;,</span><br><span class="line">                     &#39;什么现象&#39;, &#39;哪些现象&#39;, &#39;现象有哪些&#39;, &#39;症候&#39;, &#39;什么表现&#39;, &#39;哪些表现&#39;, &#39;表现有哪些&#39;,</span><br><span class="line">                     &#39;什么行为&#39;, &#39;哪些行为&#39;, &#39;行为有哪些&#39;, &#39;什么状况&#39;, &#39;哪些状况&#39;, &#39;状况有哪些&#39;, &#39;现象是什么&#39;,</span><br><span class="line">                     &#39;表现是什么&#39;, &#39;行为是什么&#39;]  # 询问症状</span><br><span class="line">self.cureway_qwds &#x3D; [&#39;药&#39;, &#39;药品&#39;, &#39;用药&#39;, &#39;胶囊&#39;, &#39;口服液&#39;, &#39;炎片&#39;, &#39;吃什么药&#39;, &#39;用什么药&#39;, &#39;怎么办&#39;,</span><br><span class="line">                     &#39;买什么药&#39;, &#39;怎么治疗&#39;, &#39;如何医治&#39;, &#39;怎么医治&#39;, &#39;怎么治&#39;, &#39;怎么医&#39;, &#39;如何治&#39;,</span><br><span class="line">                     &#39;医治方式&#39;, &#39;疗法&#39;, &#39;咋治&#39;, &#39;咋办&#39;, &#39;咋治&#39;, &#39;治疗方法&#39;]  # 询问治疗方法</span><br><span class="line">self.lasttime_qwds &#x3D; [&#39;周期&#39;, &#39;多久&#39;, &#39;多长时间&#39;, &#39;多少时间&#39;, &#39;几天&#39;, &#39;几年&#39;, &#39;多少天&#39;, &#39;多少小时&#39;,</span><br><span class="line">                      &#39;几个小时&#39;, &#39;多少年&#39;, &#39;多久能好&#39;, &#39;痊愈&#39;, &#39;康复&#39;]  # 询问治疗周期</span><br><span class="line">self.cureprob_qwds &#x3D; [&#39;多大概率能治好&#39;, &#39;多大几率能治好&#39;, &#39;治好希望大么&#39;, &#39;几率&#39;, &#39;几成&#39;, &#39;比例&#39;,</span><br><span class="line">                      &#39;可能性&#39;, &#39;能治&#39;, &#39;可治&#39;, &#39;可以治&#39;, &#39;可以医&#39;, &#39;能治好吗&#39;, &#39;可以治好吗&#39;, &#39;会好吗&#39;,</span><br><span class="line">                      &#39;能好吗&#39;, &#39;治愈吗&#39;]  # 询问治愈率</span><br><span class="line">self.check_qwds &#x3D; [&#39;检查什么&#39;, &#39;检查项目&#39;, &#39;哪些检查&#39;, &#39;什么检查&#39;, &#39;检查哪些&#39;, &#39;项目&#39;, &#39;检测什么&#39;,</span><br><span class="line">                   &#39;哪些检测&#39;, &#39;检测哪些&#39;, &#39;化验什么&#39;, &#39;哪些化验&#39;, &#39;化验哪些&#39;, &#39;哪些体检&#39;, &#39;怎么查找&#39;,</span><br><span class="line">                   &#39;如何查找&#39;, &#39;怎么检查&#39;, &#39;如何检查&#39;, &#39;怎么检测&#39;, &#39;如何检测&#39;]  # 询问检查项目</span><br><span class="line">self.belong_qwds &#x3D; [&#39;属于什么科&#39;, &#39;什么科&#39;, &#39;科室&#39;, &#39;挂什么&#39;, &#39;挂哪个&#39;, &#39;哪个科&#39;, &#39;哪些科&#39;]  # 询问科室</span><br><span class="line">self.disase_qwds &#x3D; [&#39;什么病&#39;, &#39;啥病&#39;, &#39;得了什么&#39;, &#39;得了哪种&#39;, &#39;怎么回事&#39;, &#39;咋回事&#39;, &#39;回事&#39;,</span><br><span class="line">                    &#39;什么情况&#39;, &#39;什么问题&#39;, &#39;什么毛病&#39;, &#39;啥毛病&#39;, &#39;哪种病&#39;]  # 询问疾病</span><br><span class="line"> </span><br><span class="line">def other_features(self, text):</span><br><span class="line">	&quot;&quot;&quot;</span><br><span class="line">	提取问题的关键词特征</span><br><span class="line">	:param text:</span><br><span class="line">	:return:</span><br><span class="line">	&quot;&quot;&quot;</span><br><span class="line">	features &#x3D; [0] * 7</span><br><span class="line">	for d in self.disase_qwds:</span><br><span class="line">	    if d in text:</span><br><span class="line">	        features[0] +&#x3D; 1</span><br><span class="line">	</span><br><span class="line">	for s in self.symptom_qwds:</span><br><span class="line">	    if s in text:</span><br><span class="line">	        features[1] +&#x3D; 1</span><br><span class="line">	</span><br><span class="line">	for c in self.cureway_qwds:</span><br><span class="line">	    if c in text:</span><br><span class="line">	        features[2] +&#x3D; 1</span><br><span class="line">	</span><br><span class="line">	for c in self.check_qwds:</span><br><span class="line">	    if c in text:</span><br><span class="line">	        features[3] +&#x3D; 1</span><br><span class="line">	for p in self.lasttime_qwds:</span><br><span class="line">	    if p in text:</span><br><span class="line">	        features[4] +&#x3D; 1</span><br><span class="line">	</span><br><span class="line">	for r in self.cureprob_qwds:</span><br><span class="line">	    if r in text:</span><br><span class="line">	        features[5] +&#x3D; 1</span><br><span class="line">	</span><br><span class="line">	for d in self.belong_qwds:</span><br><span class="line">	    if d in text:</span><br><span class="line">	        features[6] +&#x3D; 1</span><br><span class="line">	</span><br><span class="line">	m &#x3D; max(features)</span><br><span class="line">	n &#x3D; min(features)</span><br><span class="line">	normed_features &#x3D; []</span><br><span class="line">	if m &#x3D;&#x3D; n:</span><br><span class="line">	    normed_features &#x3D; features</span><br><span class="line">	else:</span><br><span class="line">	    for i in features:</span><br><span class="line">	        j &#x3D; (i - n) &#x2F; (m - n)</span><br><span class="line">	        normed_features.append(j)</span><br><span class="line">	</span><br><span class="line">	return np.array(normed_features)</span><br></pre></td></tr></table></figure>
+<h4 id="6-2-2-使用朴素贝叶斯进行文本分类"><a href="#6-2-2-使用朴素贝叶斯进行文本分类" class="headerlink" title="6.2.2 使用朴素贝叶斯进行文本分类"></a>6.2.2 使用朴素贝叶斯进行文本分类</h4><ul>
+<li>项目没有给出训练过程，可参考下面sklearn的例子</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># 项目没有给出训练过程，可参考下面sklearn的例子</span><br><span class="line">from sklearn.naive_bayes import MultinomialNB </span><br><span class="line"></span><br><span class="line">mnb &#x3D; MultinomialNB()   </span><br><span class="line">mnb.fit(X_train,y_train)   </span><br><span class="line">y_predict &#x3D; mnb.predict(X_test)</span><br><span class="line"></span><br><span class="line"># 意图分类模型文件</span><br><span class="line">self.tfidf_path &#x3D; os.path.join(cur_dir, &#39;model&#x2F;tfidf_model.m&#39;)</span><br><span class="line">self.nb_path &#x3D; os.path.join(cur_dir, &#39;model&#x2F;intent_reg_model.m&#39;)  #朴素贝叶斯模型</span><br><span class="line">self.tfidf_model &#x3D; joblib.load(self.tfidf_path)</span><br><span class="line">self.nb_model &#x3D; joblib.load(self.nb_path)</span><br><span class="line"></span><br><span class="line"># 意图预测</span><br><span class="line">tfidf_feature &#x3D; self.tfidf_features(question, self.tfidf_model)</span><br><span class="line"></span><br><span class="line">other_feature &#x3D; self.other_features(question)</span><br><span class="line">m &#x3D; other_feature.shape</span><br><span class="line">other_feature &#x3D; np.reshape(other_feature, (1, m[0]))</span><br><span class="line">feature &#x3D; np.concatenate((tfidf_feature, other_feature), axis&#x3D;1)</span><br><span class="line">predicted &#x3D; self.model_predict(feature, self.nb_model)</span><br><span class="line">intentions.append(predicted[0])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>根据所识别的实体进行补充和纠正意图</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"># 已知疾病，查询症状</span><br><span class="line">if self.check_words(self.symptom_qwds, question) and (&#39;Disease&#39; in types or &#39;Alia&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;query_symptom&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 已知疾病或症状，查询治疗方法</span><br><span class="line">if self.check_words(self.cureway_qwds, question) and \</span><br><span class="line">        (&#39;Disease&#39; in types or &#39;Symptom&#39; in types or &#39;Alias&#39; in types or &#39;Complication&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;query_cureway&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 已知疾病或症状，查询治疗周期</span><br><span class="line">if self.check_words(self.lasttime_qwds, question) and (&#39;Disease&#39; in types or &#39;Alia&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;query_period&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 已知疾病，查询治愈率</span><br><span class="line">if self.check_words(self.cureprob_qwds, question) and (&#39;Disease&#39; in types or &#39;Alias&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;query_rate&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 已知疾病，查询检查项目</span><br><span class="line">if self.check_words(self.check_qwds, question) and (&#39;Disease&#39; in types or &#39;Alias&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;query_checklist&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 查询科室</span><br><span class="line">if self.check_words(self.belong_qwds, question) and \</span><br><span class="line">        (&#39;Disease&#39; in types or &#39;Symptom&#39; in types or &#39;Alias&#39; in types or &#39;Complication&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;query_department&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 已知症状，查询疾病</span><br><span class="line">if self.check_words(self.disase_qwds, question) and (&quot;Symptom&quot; in types or &quot;Complication&quot; in types):</span><br><span class="line">    intention &#x3D; &quot;query_disease&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"></span><br><span class="line"># 若没有检测到意图，且已知疾病，则返回疾病的描述</span><br><span class="line">if not intentions and (&#39;Disease&#39; in types or &#39;Alias&#39; in types):</span><br><span class="line">    intention &#x3D; &quot;disease_describe&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 若是疾病和症状同时出现，且出现了查询疾病的特征词，则意图为查询疾病</span><br><span class="line">if self.check_words(self.disase_qwds, question) and (&#39;Disease&#39; in types or &#39;Alias&#39; in types) \</span><br><span class="line">        and (&quot;Symptom&quot; in types or &quot;Complication&quot; in types):</span><br><span class="line">    intention &#x3D; &quot;query_disease&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"># 若没有识别出实体或意图则调用其它方法</span><br><span class="line">if not intentions or not types:</span><br><span class="line">    intention &#x3D; &quot;QA_matching&quot;</span><br><span class="line">    if intention not in intentions:</span><br><span class="line">        intentions.append(intention)</span><br><span class="line"></span><br><span class="line">self.result[&quot;intentions&quot;] &#x3D; intentions</span><br></pre></td></tr></table></figure>
+<p>后续就是通过上述得到的意图信息和实体信息选择对应的模版，并将实体信息填充入组成查询语句进行数据库查询。</p>
+<blockquote>
+<p>文章编写人：王翔<br>github 地址：<br>特别鸣谢：<a target="_blank" rel="noopener" href="https://github.com/zhihao-chen/QASystemOnMedicalGraph">QASystemOnMedicalGraph</a></p>
+</blockquote>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/zhihao-chen/QASystemOnMedicalGraph">QASystemOnMedicalGraph</a></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:hjabari@qq.com">JabariH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/01/27/2021-1-27-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task04-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/">http://example.com/2021/01/27/2021-1-27-DW知识图谱学习-Task04-用户输入-知识库的查询语句/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Jabari</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DataWhale%E5%BC%80%E6%BA%90%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/">DataWhale开源组队学习</a><a class="post-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">知识图谱</a></div><div class="post_share"><div class="social-share" data-image="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127150721844.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/01/25/Datawhale%20%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0%20%E4%B9%8B%20Task%202%20%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E6%93%8D%E4%BD%9C%E4%BB%8B%E7%BB%8D/"><img class="next-cover" src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210125191624195.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/01/25/Datawhale 知识图谱组队学习 之 Task 2 基于医疗知识图谱的问答系统操作介绍/" title="DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍"><img class="cover" src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210125191624195.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-25</div><div class="title">DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍</div></div></a></div><div><a href="/2021/01/25/2021-1-25-DW知识图谱学习-Task03-Neo4j图数据库导入数据/" title="DW知识图谱学习-Task03 Neo4j图数据库导入数据"><img class="cover" src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127000308991.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-25</div><div class="title">DW知识图谱学习-Task03 Neo4j图数据库导入数据</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/friend_404.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">JabariH</div><div class="author-info__description">做知识的学习者与分享者</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Whiteco-okie"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Whiteco-okie" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:innocenfox@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=BPECl4TJb5chjdSMMcxtK_pAqRD-Kxo4&amp;noverify=0" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎浏览我的个人Blog，问题交流请加Q：1961663351</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Datawhale-%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0-%E4%B9%8B-Task-4-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-gt-%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.</span> <span class="toc-text">Datawhale 知识图谱组队学习 之 Task 4 用户输入-&gt;知识库的查询语句</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BC%95%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">一、引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">二、什么是问答系统？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E7%AE%80%E4%BB%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 问答系统简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Query%E7%90%86%E8%A7%A3"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 Query理解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-Query%E7%90%86%E8%A7%A3%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">2.2.1 Query理解介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E6%84%8F%E5%9B%BE%E8%AF%86%E5%88%AB"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2.2.2 意图识别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-%E6%A7%BD%E5%80%BC%E5%A1%AB%E5%85%85"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">2.2.3 槽值填充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BB%BB%E5%8A%A1%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.3.</span> <span class="toc-text">三、任务实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81-%E4%B8%BB%E4%BD%93%E7%B1%BB-EntityExtractor-%E6%A1%86%E6%9E%B6%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.3.1.</span> <span class="toc-text">四、 主体类 EntityExtractor 框架介绍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%91%BD%E5%90%8D%E5%AE%9E%E4%BD%93%E8%AF%86%E5%88%AB%E4%BB%BB%E5%8A%A1%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.4.</span> <span class="toc-text">五、命名实体识别任务实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%91%BD%E5%90%8D%E5%AE%9E%E4%BD%93%E8%AF%86%E5%88%AB%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.4.1.</span> <span class="toc-text">5.1 命名实体识别整体思路介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E7%BB%93%E5%90%88%E4%BB%A3%E7%A0%81%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.4.2.</span> <span class="toc-text">5.2 结合代码介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-%E6%9E%84%E5%BB%BA-AC-Tree"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">5.2.1 构建 AC Tree</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2-%E4%BD%BF%E7%94%A8AC-Tree%E8%BF%9B%E8%A1%8C%E9%97%AE%E5%8F%A5%E8%BF%87%E6%BB%A4"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">5.2.2 使用AC Tree进行问句过滤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3-%E4%BD%BF%E7%94%A8-%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%BF%9B%E8%A1%8C%E5%AE%9E%E4%BD%93%E5%8C%B9%E9%85%8D"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">5.2.3 使用 相似度进行实体匹配</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%84%8F%E5%9B%BE%E8%AF%86%E5%88%AB%E4%BB%BB%E5%8A%A1%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.5.</span> <span class="toc-text">六、意图识别任务实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E6%84%8F%E5%9B%BE%E8%AF%86%E5%88%AB%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.5.1.</span> <span class="toc-text">6.1 意图识别整体思路介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E6%84%8F%E5%9B%BE%E8%AF%86%E5%88%AB%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.5.2.</span> <span class="toc-text">6.2 意图识别整体思路介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-1-%E7%89%B9%E5%BE%81%E6%9E%84%E5%BB%BA"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">6.2.1 特征构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-2-%E4%BD%BF%E7%94%A8%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E8%BF%9B%E8%A1%8C%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">6.2.2 使用朴素贝叶斯进行文本分类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.6.</span> <span class="toc-text">参考资料</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/01/27/2021-1-27-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task04-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/" title="DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127150721844.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句"/></a><div class="content"><a class="title" href="/2021/01/27/2021-1-27-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task04-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5/" title="DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句">DW知识图谱学习-Task04 用户输入-&gt;知识库的查询语句</a><time datetime="2021-01-27T07:26:02.000Z" title="发表于 2021-01-27 15:26:02">2021-01-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/25/Datawhale%20%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0%20%E4%B9%8B%20Task%202%20%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E6%93%8D%E4%BD%9C%E4%BB%8B%E7%BB%8D/" title="DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210125191624195.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍"/></a><div class="content"><a class="title" href="/2021/01/25/Datawhale%20%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0%20%E4%B9%8B%20Task%202%20%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E6%93%8D%E4%BD%9C%E4%BB%8B%E7%BB%8D/" title="DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍">DW知识图谱学习-Task02 基于医疗知识图谱的问答系统操作介绍</a><time datetime="2021-01-25T00:26:02.000Z" title="发表于 2021-01-25 08:26:02">2021-01-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/25/2021-1-25-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task03-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="DW知识图谱学习-Task03 Neo4j图数据库导入数据"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127000308991.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="DW知识图谱学习-Task03 Neo4j图数据库导入数据"/></a><div class="content"><a class="title" href="/2021/01/25/2021-1-25-DW%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%AD%A6%E4%B9%A0-Task03-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="DW知识图谱学习-Task03 Neo4j图数据库导入数据">DW知识图谱学习-Task03 Neo4j图数据库导入数据</a><time datetime="2021-01-25T00:26:02.000Z" title="发表于 2021-01-25 08:26:02">2021-01-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E6%A1%86%E6%9E%B6Hive+MySql%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4/" title="大数据计算框架Hive+MySql搭建详细步骤"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210124233016432.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大数据计算框架Hive+MySql搭建详细步骤"/></a><div class="content"><a class="title" href="/2021/01/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E6%A1%86%E6%9E%B6Hive+MySql%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4/" title="大数据计算框架Hive+MySql搭建详细步骤">大数据计算框架Hive+MySql搭建详细步骤</a><time datetime="2021-01-24T15:26:02.000Z" title="发表于 2021-01-24 23:26:02">2021-01-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/23/%E8%80%83%E7%A0%94%E4%BF%A1%E6%81%AF%E7%AE%80%E8%A7%A3/" title="考研信息准备"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210123150857399.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="考研信息准备"/></a><div class="content"><a class="title" href="/2021/01/23/%E8%80%83%E7%A0%94%E4%BF%A1%E6%81%AF%E7%AE%80%E8%A7%A3/" title="考研信息准备">考研信息准备</a><time datetime="2021-01-23T07:00:00.000Z" title="发表于 2021-01-23 15:00:00">2021-01-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210127150721844.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By JabariH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="#">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    loader: {
+      source: {
+        '[tex]/amsCd': '[tex]/amscd'
+      }
+    },
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        addClass: [200,() => {
+          document.querySelectorAll('mjx-container:not([display=\'true\']').forEach( node => {
+            const target = node.parentNode
+            if (!target.classList.contains('has-jax')) {
+              target.classList.add('mathjax-overflow')
+            }
+          })
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: '3bnRKtj6FVeBP1dtwAwgPcgf-gzGzoHsz',
+      appKey: 'YQrhhbfqXvLMVnJLufqvEmJx',
+      placeholder: '记得留下你的昵称和邮箱...可以更快的收到回复',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign(initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https') {
+    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>
