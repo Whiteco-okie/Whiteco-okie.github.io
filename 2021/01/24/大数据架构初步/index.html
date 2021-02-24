@@ -1,0 +1,327 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>大数据架构初步 | Jabari</title><meta name="keywords" content="大数据架构"><meta name="author" content="JabariH,hjabari@qq.com"><meta name="copyright" content="JabariH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="初涉大数据开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据架构初步">
+<meta property="og:url" content="http://example.com/2021/01/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84%E5%88%9D%E6%AD%A5/index.html">
+<meta property="og:site_name" content="Jabari">
+<meta property="og:description" content="初涉大数据开发">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/wallhaven-g7jg63.png">
+<meta property="article:published_time" content="2021-01-24T15:26:02.000Z">
+<meta property="article:modified_time" content="2021-02-24T01:35:09.420Z">
+<meta property="article:author" content="JabariH">
+<meta property="article:tag" content="大数据架构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/wallhaven-g7jg63.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/01/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84%E5%88%9D%E6%AD%A5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="baidu-site-verification" content="619722b9005512164a6ae62b1aaf9d75"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":100,"languages":{"author":"作者: JabariH","link":"链接: ","source":"来源: Jabari","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-02-24 09:35:09'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}const fontSizeVal = saveToLocal.get('global-font-size')
+if (fontSizeVal !== undefined) {
+  document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/friend_404.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/wallhaven-g7jg63.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Jabari</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">大数据架构初步</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-01-24T15:26:02.000Z" title="发表于 2021-01-24 23:26:02">2021-01-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-02-24T01:35:09.420Z" title="更新于 2021-02-24 09:35:09">2021-02-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/">大数据开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Hadoop技术生态架构"><a href="#Hadoop技术生态架构" class="headerlink" title="Hadoop技术生态架构"></a>Hadoop技术生态架构</h2><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/HDFS.jpg" alt="HDFS"></p>
+<p><strong>Hbase</strong></p>
+<p>侧重于结构化的数据，其数据都存在于HDFS上，可以相当于在HDFS的基础上又进行了封装，新版的Hbase支持对数据的增删改操作，而HDFS是不支持数据的修改的。Hbase上的数据是以key-value的形式存储，Hbase是一种非关系型数据库，即NoSql；</p>
+<p><strong>MapReduce</strong></p>
+<p>是一种计算框架，延时性较高，适合对离线数据进行计算处理；</p>
+<p><strong>Storm</strong></p>
+<p>Hadoop生态下的计算框架之一，流式数据处理，延时性低，适合实时计算，只负责计算不负责存储，目前Storm并不常用，如今常用的实时计算框架有Flink、Spark。</p>
+<p><strong>Hive</strong></p>
+<p>Sql语言转换工具，支持Hsql语句，但有一些细节不一样，能够将Hive的sql语句进行翻译，转换成难理解的MapReduce，实质就是MapReduce的一个封装，简化了MapReduce的工作流程；</p>
+<p><strong>Mahout</strong></p>
+<p>凌驾于计算框架之上的封装，为了解放生产力，封装了数据挖掘算法模型，基于MapReduce运行；</p>
+<p><strong>RDBMS</strong></p>
+<p>关系型数据库(MySql等)，存储的数据是经过汇总聚合过后的数据，非大数据，可以对数据进行一个实时大屏展示；</p>
+<p><strong>Zoopkeeper</strong></p>
+<p>进行资源调度，分配，协调Hadoop的生态架构稳定运行；</p>
+<p><strong>Online Engine</strong>：</p>
+<h2 id="大数据生态架构的业务"><a href="#大数据生态架构的业务" class="headerlink" title="大数据生态架构的业务"></a>大数据生态架构的业务</h2><h3 id="搜索引擎概述"><a href="#搜索引擎概述" class="headerlink" title="搜索引擎概述"></a>搜索引擎概述</h3><p>如今搜索引擎在我们生活中十分常见，比如说百度、搜狐、Bing、Google等。</p>
+<p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210131192738051.png" alt="image-20210131192738051"></p>
+<h4 id="搜索引擎架构"><a href="#搜索引擎架构" class="headerlink" title="搜索引擎架构"></a>搜索引擎架构</h4><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210131194727440.png" alt="搜索引擎架构"></p>
+<p><strong>爬虫</strong>：数据收集中心，一个互联网世界的缩影；</p>
+<p><strong>索引系统</strong>：分析整理爬虫收集的资源，为检索系统提供数据；</p>
+<p><strong>检索系统</strong>：从预处理好的资源里挑选出用户最满意的结果，最快最好的展现；</p>
+<h4 id="补充：倒排索引"><a href="#补充：倒排索引" class="headerlink" title="补充：倒排索引"></a>补充：倒排索引</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 倒排索引</span><br><span class="line">keyword:数据开发	# 假设在界面上搜索“数据开发”</span><br><span class="line">URL1 -&gt; parse(解析) -&gt; 数据开发， 入门， 精通	# 通过搜索会得到很多URL，对这些URL进行解析得到一些关键字词</span><br><span class="line">URL2 -&gt; parse -&gt; 海量数据， 一站式数据</span><br><span class="line">URL3 -&gt; parse -&gt; 学习， 数据开发</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">数据开发 -&gt; URL1, URL2, URL3, ...	# 针对数据开发关键字进行搜索可以得到相应的URL</span><br><span class="line">入门 -&gt; URL1</span><br></pre></td></tr></table></figure>
+<h3 id="广告系统概述"><a href="#广告系统概述" class="headerlink" title="广告系统概述"></a>广告系统概述</h3><p>比较常见的广告系统有淘宝的直通车、案例妈妈、淘宝客和百度的搜索推广、网盟推广、百度精准广告以及Google的AdWords、AdSense。</p>
+<p>一般广告系统收费有：</p>
+<ul>
+<li>搜索广告点击收费(CPC)</li>
+<li>展示广告展现计费(CPM)</li>
+<li>淘宝客(CPS)<ul>
+<li>按照成交收费</li>
+</ul>
+</li>
+</ul>
+<h4 id="淘宝广告推荐系统架构"><a href="#淘宝广告推荐系统架构" class="headerlink" title="淘宝广告推荐系统架构"></a>淘宝广告推荐系统架构</h4><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210222234750613.png" alt="image-20210222234750613"></p>
+<p>业务系统比如说用户系统、订单系统、购物车、商品查询等不同的业务系统。通过这些业务系统产生的数据，线上的数据一般存在Hbase，离线数据一般存放于HDFS或者Hive，离线数据用于算法的训练，根据不同的业务场景，选择不同的算法训练提交结果给对应的引擎。</p>
+<p>比如引擎A通过协同过滤，引擎B通过打分策略，引擎C通过相似度等算法得到一个推荐物品子集，分别对A、B、C引擎的推荐结果通过规则过滤去重，得到处理过的候选集，进行全局排序打分，把得分最高的物品优先进行前端展示。</p>
+<p>同时通过防作弊算法，过滤掉有刷单等作弊行为的数据，最后对得到的数据，如果是曝光度、点击率等数据，对商家进行收费，如果是订单类数据则针对用户进行收费，形成一个闭环。</p>
+<h3 id="推荐系统架构"><a href="#推荐系统架构" class="headerlink" title="推荐系统架构"></a>推荐系统架构</h3><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210131201927742.png" alt="image-20210131201927742"></p>
+<h4 id="日志系统"><a href="#日志系统" class="headerlink" title="日志系统"></a>日志系统</h4><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210131202413829.png" alt="image-20210131202413829"></p>
+<p>用户产生的日志行为数据提供给推荐系统，输出结果给UI界面展示，然后用户在界面上的点击行为、跳转行为通过埋点获取数据，日志系统收集这些数据，推荐系统又能够拿到用户实时的反馈数据，针对推荐策略进行优化，将结果进一步展示到UI界面，实现闭环，即数据来源于用户又服务于用户。</p>
+<h4 id="抽象出的三种推荐方式"><a href="#抽象出的三种推荐方式" class="headerlink" title="抽象出的三种推荐方式"></a>抽象出的三种推荐方式</h4><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210131202827229.png" alt="image-20210131202827229"></p>
+<h4 id="优酷推荐引擎"><a href="#优酷推荐引擎" class="headerlink" title="优酷推荐引擎"></a>优酷推荐引擎</h4><p><img src="https://gitee.com/Whiteco-okie/imagebed/raw/master/img/image-20210131202905380.png" alt="image-20210131202905380"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:hjabari@qq.com">JabariH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/01/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84%E5%88%9D%E6%AD%A5/">http://example.com/2021/01/24/大数据架构初步/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Jabari</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84/">大数据架构</a></div><div class="post_share"><div class="social-share" data-image="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/wallhaven-g7jg63.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/01/24/%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E6%A1%86%E6%9E%B6Hive+MySql%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4/"><img class="prev-cover" src="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/v2-2409e046bf5f848830417ea03f88a7a5_r.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">大数据计算框架Hive+MySql搭建详细步骤</div></div></a></div><div class="next-post pull-right"><a href="/2020/07/26/%E9%AB%98%E6%95%88%E5%8A%9E%E5%85%ACtips/"><img class="next-cover" src="http://yanxuan.nosdn.127.net/ca2a2a50dad4ca1415f4c181c244bd71.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">高效办公学习Tips，你值得拥有！</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/01/24/大数据计算框架Hive+MySql搭建详细步骤/" title="大数据计算框架Hive+MySql搭建详细步骤"><img class="cover" src="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/v2-2409e046bf5f848830417ea03f88a7a5_r.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-24</div><div class="title">大数据计算框架Hive+MySql搭建详细步骤</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/friend_404.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">JabariH</div><div class="author-info__description">做知识的学习者与分享者</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Whiteco-okie"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Whiteco-okie" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:innocenfox@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=BPECl4TJb5chjdSMMcxtK_pAqRD-Kxo4&amp;noverify=0" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎浏览我的个人Blog，问题交流请加Q：1961663351</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop%E6%8A%80%E6%9C%AF%E7%94%9F%E6%80%81%E6%9E%B6%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">Hadoop技术生态架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%94%9F%E6%80%81%E6%9E%B6%E6%9E%84%E7%9A%84%E4%B8%9A%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">大数据生态架构的业务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%A6%82%E8%BF%B0"><span class="toc-number">2.1.</span> <span class="toc-text">搜索引擎概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%9E%B6%E6%9E%84"><span class="toc-number">2.1.1.</span> <span class="toc-text">搜索引擎架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95"><span class="toc-number">2.1.2.</span> <span class="toc-text">补充：倒排索引</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%BF%E5%91%8A%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">2.2.</span> <span class="toc-text">广告系统概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%98%E5%AE%9D%E5%B9%BF%E5%91%8A%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.1.</span> <span class="toc-text">淘宝广告推荐系统架构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-number">2.3.</span> <span class="toc-text">推荐系统架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.3.1.</span> <span class="toc-text">日志系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E5%87%BA%E7%9A%84%E4%B8%89%E7%A7%8D%E6%8E%A8%E8%8D%90%E6%96%B9%E5%BC%8F"><span class="toc-number">2.3.2.</span> <span class="toc-text">抽象出的三种推荐方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E9%85%B7%E6%8E%A8%E8%8D%90%E5%BC%95%E6%93%8E"><span class="toc-number">2.3.3.</span> <span class="toc-text">优酷推荐引擎</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/02/22/%E4%B8%80%E6%96%87%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E6%A1%86%E6%9E%B6MapReduce/" title="一文快速入门大数据计算框架MapReduce"><img src="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/wallhaven-z8me2y-1613998664112.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文快速入门大数据计算框架MapReduce"/></a><div class="content"><a class="title" href="/2021/02/22/%E4%B8%80%E6%96%87%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E6%A1%86%E6%9E%B6MapReduce/" title="一文快速入门大数据计算框架MapReduce">一文快速入门大数据计算框架MapReduce</a><time datetime="2021-02-22T12:55:02.000Z" title="发表于 2021-02-22 20:55:02">2021-02-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/02/22/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F--HDFS/" title="一文快速入门大数据计算框架MapReduce"><img src="https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/v2-512ae2f74487ecdcda31eac080925bcd_r.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一文快速入门大数据计算框架MapReduce"/></a><div class="content"><a class="title" href="/2021/02/22/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F--HDFS/" title="一文快速入门大数据计算框架MapReduce">一文快速入门大数据计算框架MapReduce</a><time datetime="2021-02-22T12:55:02.000Z" title="发表于 2021-02-22 20:55:02">2021-02-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/29/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C%E4%BC%98%E5%8C%96/" title="Django实践02-产品体验优化"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210129202631295.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django实践02-产品体验优化"/></a><div class="content"><a class="title" href="/2021/01/29/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C%E4%BC%98%E5%8C%96/" title="Django实践02-产品体验优化">Django实践02-产品体验优化</a><time datetime="2021-01-29T00:26:02.000Z" title="发表于 2021-01-29 08:26:02">2021-01-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/28/Django%E5%AE%9E%E8%B7%B503-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B5%E9%9D%A2%E4%BD%BF%E5%BE%97%E5%8C%BF%E5%90%8D%E7%94%A8%E6%88%B7%E5%8F%AF%E4%BB%A5%E6%B5%8F%E8%A7%88%E8%81%8C%E4%BD%8D%E5%88%97%E8%A1%A8/" title="Django实践03-添加自定义页面使得匿名用户可以浏览职位列表"><img src="https://raw.githubusercontent.com/Whiteco-okie/images/main/image-20210129202631295.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django实践03-添加自定义页面使得匿名用户可以浏览职位列表"/></a><div class="content"><a class="title" href="/2021/01/28/Django%E5%AE%9E%E8%B7%B503-%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B5%E9%9D%A2%E4%BD%BF%E5%BE%97%E5%8C%BF%E5%90%8D%E7%94%A8%E6%88%B7%E5%8F%AF%E4%BB%A5%E6%B5%8F%E8%A7%88%E8%81%8C%E4%BD%8D%E5%88%97%E8%A1%A8/" title="Django实践03-添加自定义页面使得匿名用户可以浏览职位列表">Django实践03-添加自定义页面使得匿名用户可以浏览职位列表</a><time datetime="2021-01-28T00:26:02.000Z" title="发表于 2021-01-28 08:26:02">2021-01-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/28/Django%E5%AE%9E%E7%8E%B0%E8%81%8C%E4%BD%8D%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" title="Django实践01-实现职位管理系统"><img src="https://pic4.zhimg.com/v2-d43e83f8a20c0d4b0e1da9d7364bb82f_r.jpg?source=172ae18b" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django实践01-实现职位管理系统"/></a><div class="content"><a class="title" href="/2021/01/28/Django%E5%AE%9E%E7%8E%B0%E8%81%8C%E4%BD%8D%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" title="Django实践01-实现职位管理系统">Django实践01-实现职位管理系统</a><time datetime="2021-01-28T00:26:02.000Z" title="发表于 2021-01-28 08:26:02">2021-01-28</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://imagebedjh.oss-cn-beijing.aliyuncs.com/imgs/wallhaven-g7jg63.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By JabariH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="#">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    loader: {
+      source: {
+        '[tex]/amsCd': '[tex]/amscd'
+      }
+    },
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        addClass: [200,() => {
+          document.querySelectorAll('mjx-container:not([display=\'true\']').forEach( node => {
+            const target = node.parentNode
+            if (!target.classList.contains('has-jax')) {
+              target.classList.add('mathjax-overflow')
+            }
+          })
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: '3bnRKtj6FVeBP1dtwAwgPcgf-gzGzoHsz',
+      appKey: 'YQrhhbfqXvLMVnJLufqvEmJx',
+      placeholder: '记得留下你的昵称和邮箱...可以更快的收到回复',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign(initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https') {
+    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>
